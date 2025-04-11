@@ -4,3 +4,4 @@ __pycache__/
 assemblyai_api_key.txt
 *.wav
 *.json
+*.m4a
