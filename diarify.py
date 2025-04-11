@@ -4,8 +4,8 @@ import os
 import sys
 import assemblyai as aai
 
-parser = argparse.ArgumentParser(description="Transcribe an audio file using AssemblyAI")
-parser.add_argument("audio_file", help="Path to audio file to transcribe")
+parser = argparse.ArgumentParser(description="Performs Speaker Diarization of an audio file using AssemblyAI")
+parser.add_argument("audio_file", help="Path to audio file to process")
 args = parser.parse_args()
 
 if not os.path.isfile(args.audio_file):
@@ -37,29 +37,10 @@ try:
 
 	transcript_dict = {
 		"id": transcript.id,
-		# "status": transcript.status,
-		"text": transcript.text,
-		"audio_duration": transcript.audio_duration,
+		# "text": transcript.text,
+		# "audio_duration": transcript.audio_duration,
 	}
-	
-	# # Manually serialize words if they exist
-	# if hasattr(transcript, 'words') and transcript.words:
-	# 	transcript_dict["words"] = []
-	# 	for word in transcript.words:
-	# 		word_dict = {
-	# 			"text": word.text,
-	# 			"start": word.start,
-	# 			"end": word.end,
-	# 			"confidence": word.confidence
-	# 		}
-			
-	# 		# Add speaker if available
-	# 		if hasattr(word, 'speaker') and word.speaker:
-	# 			word_dict["speaker"] = word.speaker
-							
-	# 			transcript_dict["words"].append(word_dict)
-	
-	# Manually serialize utterances if they exist
+		
 	if hasattr(transcript, 'utterances') and transcript.utterances:
 		transcript_dict["utterances"] = []
 		for utterance in transcript.utterances:
@@ -69,7 +50,6 @@ try:
 				"end": utterance.end
 			}
 					
-			# Add speaker if available
 			if hasattr(utterance, 'speaker') and utterance.speaker:
 				utterance_dict["speaker"] = utterance.speaker
 								
@@ -78,8 +58,6 @@ try:
 	with open(output_file, "w", encoding="utf-8") as f:
 		json.dump(transcript_dict, f, indent=2, ensure_ascii=False)
 
-	# for utterance in transcript.utterances:
-	# 	print(f"<SPEAKER>{utterance.speaker},<START>{utterance.start},<END>{utterance.end},<TEXT>{utterance.text}")
 except Exception as e:
 	print(f"Error during transcription: {e}")
 	sys.exit(1)
