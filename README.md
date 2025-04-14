@@ -10,6 +10,19 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## process_recordings.sh
+
+Wrapper script to perform conversions, diarizations, and splitting of multiple files in a given directory.
+
+```bash
+Usage: ./process_recordings.sh directory-with-m4a-files/
+
+Performs full conversion, diarization, and splitting of all m4a files in the given directory.
+
+positional arguments
+  directory-with-m4a-files  Directory containing some number of m4a files to process
+```
+
 ## diarify.py
 
 Performs speaker diarization of a wav file using AssemblyAI API.
@@ -31,12 +44,11 @@ options:
 Splits audio file into multiple tracks, 1 for each speaker, based on diarify.py results.
 
 ```bash
-usage: splitify.py [-h] audio_file json_file
+usage: splitify.py [-h] json_file
 
 Create speaker tracks from diarized transcript
 
 positional arguments:
-  audio_file  Path to audio file (e.g., podcast.wav)
   json_file   Path to JSON file with diarization results
 
 options:
@@ -49,3 +61,9 @@ To convert m4a to wav:
 ```bash
 ffmpeg -i input.m4a output.wav
 ```
+
+Mix Stereo to Mono and convert m4a to wav:
+```bash
+ffmpeg -i input.m4a -ac 1 output.wav
+```
+
