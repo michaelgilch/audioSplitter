@@ -20,11 +20,11 @@ for m4a_file in "$INPUT_DIR"/*.m4a; do
     wav_file="$INPUT_DIR/$base_name.wav"
     json_file="$INPUT_DIR/$base_name.json"
 
-    # echo "Conversion: $m4a_file → $wav_file"
-    # ffmpeg -y -i "$m4a_file" -ac 1 "$wav_file"
+    echo "Conversion: $m4a_file → $wav_file"
+    ffmpeg -y -i "$m4a_file" -ac 1 "$wav_file"
 
-    # echo "Diarization: $wav_file → $json_file"
-    # python diarify.py "$wav_file"
+    echo "Diarization: $wav_file → $json_file"
+    python diarify.py "$wav_file"
 
     echo "Splitting: $wav_file by speakers from $json_file into *_[ABC].wav"
     python splitify.py "$json_file"
