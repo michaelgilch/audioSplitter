@@ -23,8 +23,10 @@ except Exception as e:
 
 aai.settings.api_key = assemblyai_api_key
 
-base_name = os.path.splitext(os.path.basename(args.audio_file))[0]
-output_file = f"{base_name}.json"
+input_path = args.audio_file
+base_name = os.path.splitext(os.path.basename(input_path))[0]
+output_dir = os.path.dirname(os.path.abspath(input_path))
+output_file = os.path.join(output_dir, f"{base_name}.json")
 
 config = aai.TranscriptionConfig(
 	speaker_labels=True,
