@@ -5,16 +5,24 @@ import soundfile as sf
 import argparse
 
 parser = argparse.ArgumentParser(description="Create speaker tracks from diarized transcript")
-parser.add_argument("audio_file", help="Path to audio file (e.g., podcast.m4a)")
 parser.add_argument("json_file", help="Path to JSON file with diarization results")
 args = parser.parse_args()
 
+json_path = os.path.abspath(args.json_file)
+base_name = os.path.splitext(os.path.basename(json_path))[0]  # e.g., "interview"
+dir_path = os.path.dirname(json_path)
+wav_path = os.path.join(dir_path, base_name + ".wav")
+
+if not os.path.isfile(wav_path):
+    print(f"Error: Expected WAV file not found: {wav_path}")
+    exit(1)
+
 print(f"Loading diarization data from {args.json_file}")
-with open(args.json_file, 'r') as f:
-	result = json.load(f)
+with open(json_path, 'r') as f:
+  result = json.load(f)
 		
-print(f"Loading audio from {args.audio_file}")
-data, samplerate = sf.read(args.audio_file)
+print(f"Loading audio from {wav_path}")
+data, samplerate = sf.read(wav_path)
 duration = len(data) / samplerate
 		
 # For each speaker, create a track with silence where they're not speaking
@@ -44,6 +52,6 @@ for speaker in speakers:
 				silent_track[start_sample:end_sample] = data[start_sample:end_sample]
 			
 	# Export the track
-	output_file = f"speaker_{speaker}.wav"
-	print(f"Exporting to {output_file}")
-	sf.write(output_file, silent_track, samplerate)
+	output_path = os.path.join(dir_path, f"{base_name}_{speaker}.wav")
+	print(f"Exporting to {output_path}")
+	sf.write(output_path, silent_track, samplerate)
