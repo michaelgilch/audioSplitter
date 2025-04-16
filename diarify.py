@@ -6,6 +6,8 @@ import assemblyai as aai
 
 parser = argparse.ArgumentParser(description="Performs Speaker Diarization of an audio file using AssemblyAI")
 parser.add_argument("audio_file", help="Path to audio file to process")
+parser.add_argument("--speakers", type=int, default=None,
+                    help="Number of expected speakers (optional, helps AssemblyAI).")
 args = parser.parse_args()
 
 if not os.path.isfile(args.audio_file):
@@ -28,10 +30,11 @@ base_name = os.path.splitext(os.path.basename(input_path))[0]
 output_dir = os.path.dirname(os.path.abspath(input_path))
 output_file = os.path.join(output_dir, f"{base_name}.json")
 
-config = aai.TranscriptionConfig(
-	speaker_labels=True,
-	speakers_expected=3,
-)
+config_params = {"speaker_labels": True}
+if args.speakers is not None:
+    config_params["speakers_expected"] = args.speakers
+
+config = aai.TranscriptionConfig(**config_params)
 
 try:
 	transcriber = aai.Transcriber()
